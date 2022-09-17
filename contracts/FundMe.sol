@@ -36,10 +36,10 @@ contract FundMe {
         ); // 1e18 == 1 * 10 ** 18 == 1000000000000000000  it has 18 decimal place wei(default)
         funders.push(msg.sender);
         //key = value
-        addressToAmountFunded[msg.sender] = msg.value;
+        addressToAmountFunded[msg.sender] += msg.value;
     }
 
-    function widthdraw() public onlyOwner {
+    function withdraw() public onlyOwner {
         for (
             uint256 funderIndex = 0;
             funderIndex < funders.length;
@@ -70,10 +70,12 @@ contract FundMe {
         //call without even needed the ABI
         // it return 2 valable so,
         // if the fun is sucess data is stored in data returs
-        // also bytes are array so data returns by the memory -> mostly used
-        (bool callSuccess, ) = payable(msg.sender).call{
+        // also bytes are array so data returns by the memory -> mostly used    
+        /*(bool callSuccess, ) = payable(msg.sender).call{
             value: address(this).balance
-        }("");
+        }("");*/
+        
+        (bool callSuccess, ) = i_owner.call{value: address(this).balance}("");
         require(callSuccess, "Call Failed");
     }
 
@@ -85,7 +87,8 @@ contract FundMe {
         _; // rest of the code
     }
 
-    // if money is send accedently we can process then the fund will automatically
+   /*
+   // if money is send accedently we can process then the fund will automatically
     // without even calling the fund function
     receive() external payable {
         fund();
@@ -93,5 +96,5 @@ contract FundMe {
 
     fallback() external payable {
         fund();
-    }
+    }*/
 }
